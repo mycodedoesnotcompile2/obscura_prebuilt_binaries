@@ -276,6 +276,8 @@ jobs:
           passthrough = ["V8_FROM_SOURCE"]
           EOF
 
+          tail -n 5 "$CROSS_CONFIG"
+
       - name: Run build
         run: |
           cd $OBSCURA_ROOT_DIR
