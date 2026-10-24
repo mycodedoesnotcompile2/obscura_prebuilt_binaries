@@ -161,13 +161,6 @@ jobs:
             OS: ubuntu-latest
             CC_COMPILER: cross
             
-          - TARGET: i686-pc-windows-msvc
-            OS: windows-latest
-
-          - TARGET: i686-pc-windows-gnu
-            OS: ubuntu-latest
-            CC_PKG: gcc-mingw-w64-i686
-
           - TARGET: riscv64gc-unknown-linux-gnu
             OS: ubuntu-latest
             CC_PKG: gcc-riscv64-linux-gnu
