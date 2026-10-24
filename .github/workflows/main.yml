@@ -87,13 +87,14 @@ jobs:
         include:
           - TARGET: x86_64-unknown-linux-musl
             OS: ubuntu-latest
+            CC_COMPILER: cross
             
           - TARGET: x86_64-unknown-linux-gnu
             OS: ubuntu-latest
             
           - TARGET: i686-unknown-linux-gnu
             OS: ubuntu-latest
-            CC_PKG: gcc-multilib
+            CC_PKG: gcc-multilib g++-multilib
 
           - TARGET: i686-unknown-linux-musl
             OS: ubuntu-latest
@@ -307,7 +308,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: binary-${{ matrix.TARGET }}-${{ matrix.TLS }}
+          name: binary-${{ matrix.TARGET }}
           path: |
             ${{ env.OBSCURA_BIN_PATH }}
             ${{ env.OBSCURA_BIN_HASH_PATH }}
