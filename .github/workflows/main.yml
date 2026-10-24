@@ -278,6 +278,26 @@ jobs:
 
           tail -n 5 "$CROSS_CONFIG"
 
+      - name: Restore missing V8 ICU data
+        if: startsWith(matrix.TARGET, 'arm-') || startsWith(matrix.TARGET, 'armv7-')
+        run: |
+          V8_SRC="$(find "$HOME/.cargo/registry/src" \
+            -type d -name 'v8-150.4.0' -print -quit)"
+
+          if [[ -z "$V8_SRC" ]]; then
+            echo "Could not find v8-150.4.0 source directory"
+            exit 1
+          fi
+
+          mkdir -p "$V8_SRC/third_party/icu/common"
+
+          curl -fL --retry 3 \
+            "https://raw.githubusercontent.com/denoland/icu/rusty_v8/common/icudtl.dat" \
+            -o "$V8_SRC/third_party/icu/common/icudtl.dat"
+
+          test -s "$V8_SRC/third_party/icu/common/icudtl.dat"
+          ls -lh "$V8_SRC/third_party/icu/common/icudtl.dat"
+
       - name: Run build
         run: |
           cd $OBSCURA_ROOT_DIR
