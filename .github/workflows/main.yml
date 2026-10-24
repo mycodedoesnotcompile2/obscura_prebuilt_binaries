@@ -278,43 +278,27 @@ jobs:
 
           tail -n 5 "$CROSS_CONFIG"
 
-      - name: Restore missing V8 ICU data
-        if: startsWith(matrix.TARGET, 'arm-') || startsWith(matrix.TARGET, 'armv7-')
-        run: |
-          V8_SRC="$(find "$HOME/.cargo/registry/src" \
-            -type d -name 'v8-150.4.0' -print -quit)"
-
-          if [[ -z "$V8_SRC" ]]; then
-            echo "Could not find v8-150.4.0 source directory"
-            exit 1
-          fi
-
-          mkdir -p "$V8_SRC/third_party/icu/common"
-
-          curl -fL --retry 3 \
-            "https://raw.githubusercontent.com/denoland/icu/rusty_v8/common/icudtl.dat" \
-            -o "$V8_SRC/third_party/icu/common/icudtl.dat"
-
-          test -s "$V8_SRC/third_party/icu/common/icudtl.dat"
-          ls -lh "$V8_SRC/third_party/icu/common/icudtl.dat"
-
       - name: Run build
         run: |
-          cd $OBSCURA_ROOT_DIR
+          cd "$OBSCURA_ROOT_DIR"
+          CC_COMPILER="${CC_COMPILER:-cargo}"
+
+          if [[ "$TARGET" == "mips"* ]]; then
+            $CC_COMPILER +nightly build -Z build-std=std,panic_abort --release -p obscura-cli --bins --features render,stealth --target "$TARGET"
           
-          if [[ -z "${CC_COMPILER:-}" ]]; then
-            CC_COMPILER="cargo"
-          fi
-          
-          if [[ $TARGET == "mips"* ]]; then
-            $CC_COMPILER +nightly build -Z build-std=std,panic_abort --release -p obscura-cli --bins --features render,stealth --target $TARGET
-          
-          elif [[ $TARGET == "arm-"* || $TARGET == "armv7-"* ]]; then
-            V8_FROM_SOURCE=1 $CC_COMPILER build --release -p obscura-cli --bins --features render,stealth --target $TARGET
+          elif [[ "$TARGET" == "arm-"* || "$TARGET" == "armv7-"* ]]; then
+            cargo fetch
+            V8_SRC="$(find "${CARGO_HOME:-$HOME/.cargo}/registry/src" -type d -name 'v8-150.4.0' -print -quit)"
+            test -n "$V8_SRC" || { echo "V8 source not found"; exit 1; }
+            mkdir -p "$V8_SRC/third_party/icu/common"
+            curl -fsSL --retry 3 "https://raw.githubusercontent.com/denoland/icu/rusty_v8/common/icudtl.dat" -o "$V8_SRC/third_party/icu/common/icudtl.dat"
+            test -s "$V8_SRC/third_party/icu/common/icudtl.dat"
+            V8_FROM_SOURCE=1 $CC_COMPILER build --release -p obscura-cli --bins --features render,stealth --target "$TARGET"
           
           else
-            $CC_COMPILER build --release -p obscura-cli --bins --features render,stealth --target $TARGET
+            $CC_COMPILER build --release -p obscura-cli --bins --features render,stealth --target "$TARGET"
           fi
+
 
       - name: List build information
         run: |
