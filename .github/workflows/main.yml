@@ -65,7 +65,9 @@ jobs:
           OBSCURA_CURRENT_COMMIT_ID=$(git rev-parse --short HEAD)
           echo "OBSCURA_CURRENT_COMMIT_ID=$OBSCURA_CURRENT_COMMIT_ID" >> $GITHUB_ENV
           echo "OBSCURA_CURRENT_COMMIT_ID=$OBSCURA_CURRENT_COMMIT_ID" >> $GITHUB_OUTPUT
+          
           echo "OBSCURA_VERSION=$OBSCURA_VERSION" >> $GITHUB_OUTPUT
+          echo "OBSCURA_VERSION=$OBSCURA_VERSION" >> $GITHUB_ENV
           
           # case: no new commit => abort the workflow
           if [[ $OBSCURA_PREBUILT_LATEST_TAG == $OBSCURA_CURRENT_COMMIT_ID ]]; then
