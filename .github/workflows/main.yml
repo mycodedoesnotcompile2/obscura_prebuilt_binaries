@@ -57,6 +57,9 @@ jobs:
           git clone --depth=1 "$OBSCURA_REPO" "$OBSCURA_BIN_NAME"
           
           cd "$OBSCURA_ROOT_DIR"
+          git fetch --tags
+          LATEST_TAG=$(git tag --sort=-version:refname | head -n 1)
+          git checkout "$LATEST_TAG"
           OBSCURA_CURRENT_COMMIT_ID=$(git rev-parse --short HEAD)
           echo "OBSCURA_CURRENT_COMMIT_ID=$OBSCURA_CURRENT_COMMIT_ID" >> $GITHUB_ENV
           echo "OBSCURA_CURRENT_COMMIT_ID=$OBSCURA_CURRENT_COMMIT_ID" >> $GITHUB_OUTPUT
@@ -188,7 +191,7 @@ jobs:
             CC_COMPILER: cross
             
           - TARGET: mips64el-unknown-linux-gnuabi64
-            OS: ubuntu-latest
+            OS: ubuntu-24.04
             CC_PKG: gcc-mips64el-linux-gnuabi64 g++-mips64el-linux-gnuabi64
            
           - TARGET: mips64el-unknown-linux-muslabi64
@@ -218,6 +221,11 @@ jobs:
         run: |
           cd /tmp/
           git clone --depth=1 "$OBSCURA_REPO" "$OBSCURA_BIN_NAME"
+          
+          cd "$OBSCURA_BIN_NAME"
+          git fetch --tags
+          LATEST_TAG=$(git tag --sort=-version:refname | head -n 1)
+          git checkout "$LATEST_TAG"
 
       - name: Install and configure dependencies
         run: |
@@ -277,7 +285,10 @@ jobs:
           fi
           
           if [[ $TARGET == "mips"* ]]; then
-            $CC_COMPILER +nightly build -Z build-std=std,panic_abort -p "$DELLPWN_BIN_NAME" --release -p obscura-cli --bins --features render,stealth --target $TARGET
+            $CC_COMPILER +nightly build -Z build-std=std,panic_abort --release -p obscura-cli --bins --features render,stealth --target $TARGET
+          
+          if [[ $TARGET == "arm-"* ]]; then
+            V8_FROM_SOURCE=1 $CC_COMPILER build --release -p obscura-cli --bins --features render,stealth --target $TARGET
           else
             $CC_COMPILER build --release -p obscura-cli --bins --features render,stealth --target $TARGET
           fi
