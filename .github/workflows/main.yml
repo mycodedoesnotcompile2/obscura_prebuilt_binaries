@@ -11,7 +11,7 @@ permissions:
 env:
   CARGO_TERM_COLOR: always
   OBSCURA_ROOT_DIR: /tmp/obscura
-  OBSCURA_BIN_NAME: adhammer
+  OBSCURA_BIN_NAME: obscura
   OBSCURA_REPO: https://github.com/h4ckf0r0day/obscura.git
   APT: sudo apt -y -qq -o=Dpkg::Use-Pty=0
   CHOCO: choco install -y -r --no-progress
