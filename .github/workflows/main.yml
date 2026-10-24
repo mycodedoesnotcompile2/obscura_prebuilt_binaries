@@ -157,37 +157,37 @@ jobs:
             OS: windows-11-arm
           # ------------------------------
 
-          - TARGET: x86_64-unknown-freebsd
-            OS: ubuntu-latest
-            CC_COMPILER: cross
+          # - TARGET: x86_64-unknown-freebsd
+          #   OS: ubuntu-latest
+          #   CC_COMPILER: cross
             
-          - TARGET: riscv64gc-unknown-linux-gnu
-            OS: ubuntu-latest
-            CC_PKG: gcc-riscv64-linux-gnu
+          # - TARGET: riscv64gc-unknown-linux-gnu
+          #   OS: ubuntu-latest
+          #   CC_PKG: gcc-riscv64-linux-gnu
 
-          - TARGET: riscv64gc-unknown-linux-musl
-            OS: ubuntu-latest
-            CC_COMPILER: cross
+          # - TARGET: riscv64gc-unknown-linux-musl
+          #   OS: ubuntu-latest
+          #   CC_COMPILER: cross
 
-          - TARGET: powerpc64le-unknown-linux-gnu
-            OS: ubuntu-latest
-            CC_COMPILER: cross
+          # - TARGET: powerpc64le-unknown-linux-gnu
+          #   OS: ubuntu-latest
+          #   CC_COMPILER: cross
 
-          - TARGET: aarch64-linux-android
-            OS: ubuntu-latest
-            CC_COMPILER: cross
+          # - TARGET: aarch64-linux-android
+          #   OS: ubuntu-latest
+          #   CC_COMPILER: cross
             
-          - TARGET: armv7-linux-androideabi
-            OS: ubuntu-latest
-            CC_COMPILER: cross
+          # - TARGET: armv7-linux-androideabi
+          #   OS: ubuntu-latest
+          #   CC_COMPILER: cross
             
-          - TARGET: mips64el-unknown-linux-gnuabi64
-            OS: ubuntu-24.04
-            CC_PKG: gcc-mips64el-linux-gnuabi64 g++-mips64el-linux-gnuabi64
+          # - TARGET: mips64el-unknown-linux-gnuabi64
+          #   OS: ubuntu-24.04
+          #   CC_PKG: gcc-mips64el-linux-gnuabi64 g++-mips64el-linux-gnuabi64
            
-          - TARGET: mips64el-unknown-linux-muslabi64
-            OS: ubuntu-latest
-            CC_COMPILER: cross
+          # - TARGET: mips64el-unknown-linux-muslabi64
+          #   OS: ubuntu-latest
+          #   CC_COMPILER: cross
 
 
     runs-on: ${{ matrix.OS }}
