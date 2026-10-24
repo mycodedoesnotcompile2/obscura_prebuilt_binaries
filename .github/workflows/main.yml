@@ -57,31 +57,34 @@ jobs:
           git clone --depth=1 "$OBSCURA_REPO" "$OBSCURA_BIN_NAME"
           
           cd "$OBSCURA_ROOT_DIR"
+          
           git fetch --tags
-          LATEST_TAG=$(git tag --sort=-version:refname | head -n 1)
-          git checkout "$LATEST_TAG"
+          OBSCURA_VERSION=$(git tag --sort=-version:refname | head -n 1)
+          git checkout "$OBSCURA_VERSION"
+          
           OBSCURA_CURRENT_COMMIT_ID=$(git rev-parse --short HEAD)
           echo "OBSCURA_CURRENT_COMMIT_ID=$OBSCURA_CURRENT_COMMIT_ID" >> $GITHUB_ENV
           echo "OBSCURA_CURRENT_COMMIT_ID=$OBSCURA_CURRENT_COMMIT_ID" >> $GITHUB_OUTPUT
-
+          echo "OBSCURA_VERSION=$OBSCURA_VERSION" >> $GITHUB_OUTPUT
+          
           # case: no new commit => abort the workflow
           if [[ $OBSCURA_PREBUILT_LATEST_TAG == $OBSCURA_CURRENT_COMMIT_ID ]]; then
             echo "[!] No new version to compile"
             exit 100
           fi
 
-      - name: Get version
-        id: release_version_cargo_get
-        uses: nicolaiunrein/cargo-get@master
-        with:
-          subcommand: workspace.package.version
-          options: --entry "$OBSCURA_ROOT_DIR/Cargo.toml"
+      # - name: Get version
+      #   id: release_version_cargo_get
+      #   uses: nicolaiunrein/cargo-get@master
+      #   with:
+      #     subcommand: workspace.package.version
+      #     options: --entry "$OBSCURA_ROOT_DIR/Cargo.toml"
 
-      - name: Set OBSCURA_VERSION build variable
-        id: release_version
-        run: |
-          OBSCURA_VERSION=${{ steps.release_version_cargo_get.outputs.metadata }}
-          echo "OBSCURA_VERSION=$OBSCURA_VERSION" >> $GITHUB_OUTPUT
+      # - name: Set OBSCURA_VERSION build variable
+      #   id: release_version
+      #   run: |
+      #     OBSCURA_VERSION=${{ steps.release_version_cargo_get.outputs.metadata }}
+      #     echo "OBSCURA_VERSION=$OBSCURA_VERSION" >> $GITHUB_OUTPUT
 
 
   build:
@@ -287,8 +290,9 @@ jobs:
           if [[ $TARGET == "mips"* ]]; then
             $CC_COMPILER +nightly build -Z build-std=std,panic_abort --release -p obscura-cli --bins --features render,stealth --target $TARGET
           
-          if [[ $TARGET == "arm-"* ]]; then
+          elif [[ $TARGET == "arm-"* ]]; then
             V8_FROM_SOURCE=1 $CC_COMPILER build --release -p obscura-cli --bins --features render,stealth --target $TARGET
+          
           else
             $CC_COMPILER build --release -p obscura-cli --bins --features render,stealth --target $TARGET
           fi
