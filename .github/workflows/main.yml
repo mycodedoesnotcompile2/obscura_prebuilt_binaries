@@ -16,6 +16,9 @@ env:
   APT: sudo apt -y -qq -o=Dpkg::Use-Pty=0
   CHOCO: choco install -y -r --no-progress
 
+  CFLAGS_i686_unknown_linux_musl: "-msse2"
+  CXXFLAGS_i686_unknown_linux_musl: "-msse2"
+
 defaults:
   run:
     shell: bash
@@ -99,21 +102,23 @@ jobs:
           - TARGET: i686-unknown-linux-musl
             OS: ubuntu-latest
             CC_COMPILER: cross
-            CC_PKG: gcc-multilib
+            CC_PKG: gcc-multilib g++-multilib
           
           - TARGET: aarch64-unknown-linux-musl
             OS: ubuntu-24.04-arm
+            CC_COMPILER: cross
             
           - TARGET: aarch64-unknown-linux-gnu
             OS: ubuntu-24.04-arm
           
-          - TARGET: armv7-unknown-linux-musleabihf
-            OS: ubuntu-latest
-            CC_COMPILER: cross
+          # - TARGET: armv7-unknown-linux-musleabihf
+          #   OS: ubuntu-latest
+          #   CC_COMPILER: cross
           
           - TARGET: armv7-unknown-linux-gnueabihf
             OS: ubuntu-latest
-            CC_PKG: crossbuild-essential-armhf
+            #CC_PKG: crossbuild-essential-armhf
+            CC_COMPILER: cross
 
           - TARGET: arm-unknown-linux-musleabihf
             OS: ubuntu-latest
