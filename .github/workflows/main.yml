@@ -285,7 +285,7 @@ jobs:
           if [[ $TARGET == "mips"* ]]; then
             $CC_COMPILER +nightly build -Z build-std=std,panic_abort --release -p obscura-cli --bins --features render,stealth --target $TARGET
           
-          elif [[ $TARGET == "arm-"* ]]; then
+          elif [[ $TARGET == "arm-"* || $TARGET == "armv7-"* ]]; then
             V8_FROM_SOURCE=1 $CC_COMPILER build --release -p obscura-cli --bins --features render,stealth --target $TARGET
           
           else
