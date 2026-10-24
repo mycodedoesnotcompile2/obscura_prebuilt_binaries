@@ -266,10 +266,20 @@ jobs:
             grep -i lto Cargo.toml
           fi
 
+      - name: Patch cross.toml for v8 compilation
+        run: |
+          # Pass V8_FROM_SOURCE into the cross container
+          #sed -i '/^\[build\.env\]/a passthrough = ["V8_FROM_SOURCE"]' "$CROSS_CONFIG"
+          cat >> "$CROSS_CONFIG" <<'EOF'
+          
+          [build.env]
+          passthrough = ["V8_FROM_SOURCE"]
+          EOF
+
       - name: Run build
         run: |
           cd $OBSCURA_ROOT_DIR
-
+          
           if [[ -z "${CC_COMPILER:-}" ]]; then
             CC_COMPILER="cargo"
           fi
