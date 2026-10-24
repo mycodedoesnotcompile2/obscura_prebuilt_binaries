@@ -225,7 +225,7 @@ jobs:
 
           if [[ $OS == ubuntu* ]]; then
             $APT update
-            #$APT install libssl-dev pkg-config
+            #$APT install libssl-dev pkg-config libglib2.0-dev
           fi
 
           # for musl builds
